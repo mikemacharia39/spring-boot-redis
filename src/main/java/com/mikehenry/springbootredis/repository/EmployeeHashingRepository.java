@@ -46,8 +46,8 @@ public class EmployeeHashingRepository {
      * @param msisdn employee mobile number
      * @param data JSON Data
      */
-    public void setValueWithExpireTime(String msisdn, String data, long timeout) {
-        valueOperations.set("DISPOSABLE_DATA_"+msisdn, data, timeout, TimeUnit.SECONDS);
+    public void setValueWithExpireTime(String msisdn, String data, long timeout, TimeUnit timeUnit) {
+        valueOperations.set("DISPOSABLE_DATA_" + msisdn, data, timeout, timeUnit);
     }
 
     /**
@@ -55,6 +55,6 @@ public class EmployeeHashingRepository {
      * @param msisdn mobileNumber
      */
     public String getValueData(String msisdn) {
-         return (String) valueOperations.get("DISPOSABLE_DATA_"+msisdn);
+        return (String) valueOperations.get("DISPOSABLE_DATA_"+msisdn);
     }
 }
