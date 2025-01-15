@@ -1,7 +1,6 @@
 package com.mikehenry.springbootredis.responses;
 
-import com.mikehenry.springbootredis.model.Employee;
-import lombok.AllArgsConstructor;
+import com.mikehenry.springbootredis.entity.Employee;
 import lombok.Getter;
 import lombok.Setter;
 
