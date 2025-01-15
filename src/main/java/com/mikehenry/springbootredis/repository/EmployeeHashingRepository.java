@@ -1,6 +1,6 @@
 package com.mikehenry.springbootredis.repository;
 
-import com.mikehenry.springbootredis.requests.AddressDto;
+import com.mikehenry.springbootredis.entity.Address;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -8,8 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Map;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Repository
 public class EmployeeHashingRepository {
@@ -27,16 +28,24 @@ public class EmployeeHashingRepository {
 
     // ============== HASH OPERATIONS ====================
 
-    public void create(String msisdn, AddressDto addressData) {
+    public Address save(String msisdn, Address addressData) {
         hashOperations.put(HASH_KEY, msisdn, addressData);
+        return addressData;
     }
 
-    public AddressDto getAddressByMobileNumber(String msisdn) {
+    public Address getAddressByMobileNumber(String msisdn) {
         if (hashOperations.hasKey(HASH_KEY, msisdn)) {
-            return (AddressDto) hashOperations.get(HASH_KEY, msisdn);
+            return (Address) hashOperations.get(HASH_KEY, msisdn);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found");
         }
+    }
+
+    public List<Address> findAll() {
+        return hashOperations.values(HASH_KEY)
+                .stream()
+                .map(value -> (Address) value)
+                .collect(Collectors.toList());
     }
 
     public void delete(String msisdn) {
