@@ -1,11 +1,13 @@
 package com.mikehenry.springbootredis.requests;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class CreateAddressRequest {
+@NoArgsConstructor
+public class AddressDto {
 
     private String mobileNumber;
     private String address;
