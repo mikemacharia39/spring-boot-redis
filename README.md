@@ -4,13 +4,14 @@ This project shows how to work with redis
 ### Getting Started
 
 * The application shows how to work with Redis
-* Ensure you have installed the below applications
+* The application uses docker to run Redis. However, you can install Redis on your local machine.
+* Ensure you have installed the below applications:
 
     |Application|Version|
     |---------|------------|
     |Redis||
     |JDK| \> 11 |
-
+    |Maven| \> 3.0 |
 
 ### Overview
 The application uses 3 mechanisms to work with Redis:
