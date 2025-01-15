@@ -1,6 +1,6 @@
 package com.mikehenry.springbootredis.service;
 
-import com.mikehenry.springbootredis.model.Employee;
+import com.mikehenry.springbootredis.entity.Employee;
 import com.mikehenry.springbootredis.repository.EmployeeRepository;
 import com.mikehenry.springbootredis.requests.UpdateEmployeePayload;
 import org.springframework.beans.factory.annotation.Autowired;
