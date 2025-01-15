@@ -1,7 +1,7 @@
 package com.mikehenry.springbootredis.controller;
 
 import com.mikehenry.springbootredis.repository.EmployeeHashingRepository;
-import com.mikehenry.springbootredis.requests.CreateAddressRequest;
+import com.mikehenry.springbootredis.requests.AddressDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,18 +30,11 @@ public class EmployeeAddressController {
     EmployeeHashingRepository employeeHashingRepository;
 
     @PostMapping
-    public ResponseEntity<Object> createEmployeeByHash(@RequestBody CreateAddressRequest createAddressRequest) {
+    public ResponseEntity<Object> createEmployeeByHash(@RequestBody AddressDto address) {
 
-        String msisdn = createAddressRequest.getMobileNumber();
+        String msisdn = address.getMobileNumber();
 
-        Map<String, Object> addressMap = new HashMap<>();
-        addressMap.put("address", createAddressRequest.getAddress());
-        addressMap.put("city", createAddressRequest.getCity());
-        addressMap.put("zipCode", createAddressRequest.getZipCode());
-        addressMap.put("country", createAddressRequest.getCountry());
-        addressMap.put("msisdn", msisdn);
-
-        employeeHashingRepository.create(msisdn, addressMap);
+        employeeHashingRepository.create(msisdn, address);
 
         Map<String, Object> response = new HashMap<>();
         response.put("statusCode", 1);
@@ -51,27 +44,18 @@ public class EmployeeAddressController {
     }
 
     @GetMapping("/{msisdn}")
-    public ResponseEntity<Object> getAddressByMSISDN(@PathVariable String msisdn) {
+    public ResponseEntity<AddressDto> getAddressByMSISDN(@PathVariable String msisdn) {
 
-        Map dataMap = employeeHashingRepository.getAddressByMobileNumber(msisdn);
+        AddressDto dataMap = employeeHashingRepository.getAddressByMobileNumber(msisdn);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("statusCode", 1);
-        response.put("message", "Successfully saved address");
-        response.put("data", dataMap);
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(dataMap, HttpStatus.OK);
     }
 
     @DeleteMapping("/{msisdn}")
-    public ResponseEntity<Object> deleteAddressByMSISDN(@PathVariable String msisdn) {
+    public ResponseEntity<Void> deleteAddressByMSISDN(@PathVariable String msisdn) {
 
         employeeHashingRepository.delete(msisdn);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("statusCode", 1);
-        response.put("message", "Successfully deleted address");
-
-        return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
