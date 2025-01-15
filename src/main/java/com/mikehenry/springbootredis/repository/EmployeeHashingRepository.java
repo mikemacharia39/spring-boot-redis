@@ -1,5 +1,6 @@
 package com.mikehenry.springbootredis.repository;
 
+import com.mikehenry.springbootredis.requests.AddressDto;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -26,12 +27,16 @@ public class EmployeeHashingRepository {
 
     // ============== HASH OPERATIONS ====================
 
-    public void create(String msisdn, Map<String, Object> addressData) {
+    public void create(String msisdn, AddressDto addressData) {
         hashOperations.put(HASH_KEY, msisdn, addressData);
     }
 
-    public Map getAddressByMobileNumber(String msisdn) {
-        return (Map) hashOperations.get(HASH_KEY, msisdn);
+    public AddressDto getAddressByMobileNumber(String msisdn) {
+        if (hashOperations.hasKey(HASH_KEY, msisdn)) {
+            return (AddressDto) hashOperations.get(HASH_KEY, msisdn);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found");
+        }
     }
 
     public void delete(String msisdn) {
