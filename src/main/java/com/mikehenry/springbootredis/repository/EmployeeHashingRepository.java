@@ -3,7 +3,9 @@ package com.mikehenry.springbootredis.repository;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -15,6 +17,8 @@ public class EmployeeHashingRepository {
 
     private final ValueOperations<String, Object> valueOperations;
 
+    public static final String HASH_KEY = "EMPLOYEE_ADDRESS";
+
     public EmployeeHashingRepository(RedisTemplate<String, Object> redisTemplate) {
         this.hashOperations = redisTemplate.opsForHash();
         this.valueOperations = redisTemplate.opsForValue();
@@ -23,11 +27,19 @@ public class EmployeeHashingRepository {
     // ============== HASH OPERATIONS ====================
 
     public void create(String msisdn, Map<String, Object> addressData) {
-        hashOperations.put("EMPLOYEE_ADDRESS", msisdn, addressData);
+        hashOperations.put(HASH_KEY, msisdn, addressData);
     }
 
-    public Map getUserAddress(String msisdn) {
-        return (Map) hashOperations.get("EMPLOYEE_ADDRESS", msisdn);
+    public Map getAddressByMobileNumber(String msisdn) {
+        return (Map) hashOperations.get(HASH_KEY, msisdn);
+    }
+
+    public void delete(String msisdn) {
+        if (hashOperations.hasKey(HASH_KEY, msisdn)) {
+            hashOperations.delete(HASH_KEY, msisdn);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found");
+        }
     }
 
     // ============ VALUE OPERATIONS ==================
