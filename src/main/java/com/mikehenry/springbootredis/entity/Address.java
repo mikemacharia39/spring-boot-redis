@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class AddressDto {
+public class Address {
 
     private String mobileNumber;
     private String address;
