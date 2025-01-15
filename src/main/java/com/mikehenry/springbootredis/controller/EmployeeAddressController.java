@@ -1,7 +1,7 @@
 package com.mikehenry.springbootredis.controller;
 
 import com.mikehenry.springbootredis.repository.EmployeeHashingRepository;
-import com.mikehenry.springbootredis.requests.AddressDto;
+import com.mikehenry.springbootredis.entity.Address;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 /**
  * The idea of behind this EmployeeAddressController and EmployeeHashingRepository is to demonstrate how to store, retrieve and delete using
@@ -23,32 +22,29 @@ import java.util.Map;
  */
 
 @RestController
-@RequestMapping("/employeeAddress")
+@RequestMapping("/employeeAddresses")
 public class EmployeeAddressController {
 
     @Autowired
     EmployeeHashingRepository employeeHashingRepository;
 
     @PostMapping
-    public ResponseEntity<Object> createEmployeeByHash(@RequestBody AddressDto address) {
-
+    public ResponseEntity<Address> createEmployeeByHash(@RequestBody Address address) {
         String msisdn = address.getMobileNumber();
-
-        employeeHashingRepository.create(msisdn, address);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("statusCode", 1);
-        response.put("message", "Successfully saved address");
-
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(employeeHashingRepository.save(msisdn, address), HttpStatus.CREATED);
     }
 
     @GetMapping("/{msisdn}")
-    public ResponseEntity<AddressDto> getAddressByMSISDN(@PathVariable String msisdn) {
+    public ResponseEntity<Address> getAddressByMSISDN(@PathVariable String msisdn) {
 
-        AddressDto dataMap = employeeHashingRepository.getAddressByMobileNumber(msisdn);
+        Address dataMap = employeeHashingRepository.getAddressByMobileNumber(msisdn);
 
         return new ResponseEntity<>(dataMap, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Address>> getAllAddresses() {
+        return new ResponseEntity<>(employeeHashingRepository.findAll(), HttpStatus.OK);
     }
 
     @DeleteMapping("/{msisdn}")
